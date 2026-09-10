@@ -65,7 +65,7 @@ local AutoTpTopEnabled = false
 local AutoHatchEgg = false
 local AutoCollectCoins = false
 local AutoRebirth = false
-local AutoInstantPrompt = true
+local AutoInstantPrompt = false
 local AntiAFK = true
 
 local SpeedEnabled = false
@@ -92,7 +92,6 @@ end)
 local function optimizePrompt(prompt)
     if not prompt or not prompt:IsA("ProximityPrompt") then return end
     pcall(function()
-        prompt.MaxActivationDistance = 999999
         prompt.RequiresLineOfSight = false
         prompt.HoldDuration = 0
         prompt.Enabled = true
@@ -116,15 +115,14 @@ local function triggerPrompt(prompt)
     end)
 end
 
--- Optimized Proximity Prompt Background Loop
+-- Safe Instant Proximity Prompt Background Loop
 task.spawn(function()
     while true do
-        task.wait(0.4)
+        task.wait(1.0)
         if AutoInstantPrompt then
             pcall(function()
                 for _, prompt in pairs(workspace:GetDescendants()) do
                     if prompt:IsA("ProximityPrompt") then
-                        prompt.MaxActivationDistance = 999999
                         prompt.RequiresLineOfSight = false
                         prompt.HoldDuration = 0
                     end
@@ -597,7 +595,7 @@ btnTpNow.MouseButton1Click:Connect(function()
 end)
 
 -- 11. INSTANT PROMPT TOGGLE
-createToggle("⚡ Mở Trứng / Nhặt Đồ 0s Hold (Instant Prompt)", true, function(val)
+createToggle("⚡ Mở Trứng / Nhặt Đồ 0s Hold (Instant Prompt)", false, function(val)
     AutoInstantPrompt = val
 end)
 
